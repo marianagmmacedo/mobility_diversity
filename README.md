@@ -35,5 +35,5 @@ https://arxiv.org/abs/2102.06619
 
 ## Contact
 
-For any doubt/question, you can contact Dr. Mariana Macedo @@@@ INSTITUTIONAL E-MAIL ADDRESS @@@@
+For any doubt/question, you can contact Dr. Mariana Macedo (mmacedo@biocomplexlab.org)
 
