@@ -1,3 +1,5 @@
+# IMPORTING MODULES
+
 import pandas as pd
 import numpy as np
 import math
@@ -17,11 +19,14 @@ import scipy
 sys.setrecursionlimit(100000)
 from itertools import combinations
 from matplotlib import rcParams
+
+# CUSTOMIZING OPTIONS
 rcParams['mathtext.fontset'] = 'custom'
 rcParams['mathtext.it'] = 'Arial:italic'
 rcParams['mathtext.rm'] = 'Arial'
 
 
+# defining the class
 class MobilityDiversityFunctions:
     
     def __init__(self):
@@ -33,85 +38,99 @@ class MobilityDiversityFunctions:
         """
         Compute mobility diversity based on all the options and the probabilities
         
-        Parameters
+        INPUT Parameters
         ----------
         all_options : list
-            list of all the options (travel destinations)
+            all the options (i.e., the travel destinations) available
 
         probabilities : list
-            list of all the probabilities of going to the all_options
+            the probabilities of going to each of the destinations
 
         Returns
         -------
         mobility diversity : a float value
         """
+        
         return stats.entropy(probabilities, base=2)/np.log2(len(all_options))
     
     
     @staticmethod
     def return_probabilities(data_group, destination_column, expansion_column, all_options):
         """
-        Compute the probabilities based on the column of expansion factor
+        Compute the probabilities of travelling to each of the destination
+        zone available, based on the expansion factor of each travel.
         
-        Parameters
+        INPUT Parameters
         ----------
         data_group : dataframe
-            dataframe with all the travel information
+            dataframe containing all the travel information
 
         destination_column : string
-            name of the column that have the travel destination
+            name of the column storing the travel destination
             
         expansion_column : string
-            name of the column that have the expansion factor of each travel
+            name of the column storing the expansion factor of each travel
             
         all_options : list
-            list of all the options (unique travel destinations)
+            all the options (i.e., the unique travel destinations) available
 
         Returns
         -------
         probabilities : list of probabilities 
         """
+        
         counts = data_group.groupby(destination_column)[expansion_column].count()\
                                 .reindex(all_options, fill_value=0).reset_index(name='count')
+        
         counts['prob'] = counts['count']/counts['count'].sum()
+        
         return counts['prob'].values
+    
     
     @staticmethod
     def calculate_mobility_diversity_by_sampling(all_options, data_group, allow_duplicates=False, expansion_column = 'FAT_EXP', destination_column='TRAJECTORY', percentage_sample=0.8, simulations=1000, fixed_sample_size=None, expand=True):
         """
-        Compute the mobility diversity using sampling technique
+        Compute the mobility diversity using the bootstrapping sampling technique
         
-        Parameters
+        INPUT Parameters
         ----------
         
         all_options : list
-            list of all the options (unique travel destinations)
+            all the options (i.e., the unique travel destinations) available
         
         data_group : dataframe
-            dataframe with all the travel information
+            dataframe containing all the travel information
         
-        allow_duplicates : Boolean
-            allow the sampling to choose more than once the same travel
+        allow_duplicates : Boolean (default=False)
+            if True allows the sampling to choose more than once the same travel
         
-        percentage_sample : float
-            value between 0 and 1 to establish the fraction of travels that will be randomly chosen from the data
+        expansion_column : string (default='FAT_EXP')
+            name of the column storing the expansion factor of each travel
+
+        destination_column : string (default='TRAJECTORY')
+            name of the column storing the travel destination
+
+        percentage_sample : float (default=0.8)
+            the fraction (between 0 and 1) of travels that will be randomly selected from the data
         
-        simulations : int
-            number of times that the mobility diversity will be computed
+        simulations : int (default=1000)
+            number of times (i.e., distinct samples) that the mobility diversity will be computed
         
-        get_min_ : int
-            establish the minimal of travels that can be selected
-       
-        destination_column : string
-            name of the column that have the travel destination
+        fixed_sample_size: int (default=None)
+            size of the data sample to consider (it spans from 1 to the number
+            of records in the DataFrame)
             
-        expansion_column : string
-            name of the column that have the expansion factor of each travel
+        expand : Boolean (default=True)
+            if True duplicates the travels according to their expansion factor
+        
+            
 
         Returns
         -------
         mobility diversity : list of float values
         """
+        
+        
         if expand:
             # depending on your data you have to make sure that the expansion factor is positive and different from Nan
             # data_group[expansion_column] = data_group[expansion_column].abs().fillna(0)
@@ -136,40 +155,37 @@ class MobilityDiversityFunctions:
     
     
     @staticmethod
-    def calculate_mobility_diversity_fast_shuffling_int_expansion_factor(all_options, data_group, expand=False, get_min_ = None, expansion_column = 1, destination_column='TRAJECTORY', percentage_sample=0.8, simulations=1000, replace_false=False, print_evolution=False):
+    def calculate_mobility_diversity_fast_shuffling_int_expansion_factor(all_options, data_group, expand=False, get_min_ = None, expansion_column = 1, destination_column='TRAJECTORY', percentage_sample=0.8, simulations=1000, print_evolution=False):
         """
-        Compute the mobility diversity using sampling technique
+        Compute the mobility diversity using the bootstrapping sampling technique
         
-        Parameters
+        INPUT Parameters
         ----------
         
         all_options : list
-            list of all the options (unique travel destinations)
+            all the options (i.e., the unique travel destinations) available
         
         data_group : dataframe
-            dataframe with all the travel information
+            dataframe containing all the travel information
         
-        expand : Boolean
-            allow the dataframe to be expanded to the number of travels considering the expansion factor
+        expand : Boolean (default=False)
+            allows the dataframe to be expanded by considering the travels' expansion factor
         
-        allow_duplicates : Boolean
-            allow the sampling to choose more than once the same travel
-        
-        percentage_sample : float
-            value between 0 and 1 to establish the fraction of travels that will be randomly chosen from the data
-        
-        simulations : int
-            number of times that the mobility diversity will be computed
-        
-        get_min_ : int
-            establish the minimal of travels that can be selected
-       
-        destination_column : string
-            name of the column that have the travel destination
-            
+        get_min_ : int (default=None)
+            establishes the minimal number of travels that can be selected
+
         expansion_column : string
-            name of the column that have the expansion factor of each travel
-            
+            name of the column storing the expansion factor of each travel
+
+        destination_column : string (default='TRAJECTORY')
+            name of the column storing the travel destination
+
+        percentage_sample : float (default=0.8)
+            the fraction (between 0 and 1) of travels that will be randomly selected from the data
+        
+        simulations : int (default=1000)
+            number of times (i.e., distinct samples) that the mobility diversity will be computed
+       
         print_evolution : Boolean
             allow printing the number of simulations that were executed 
 
@@ -192,6 +208,7 @@ class MobilityDiversityFunctions:
         all_loc = sklearn.utils.shuffle(data_group[destination_column].values)
         
         entropies_ = []
+
         
         for time in range(simulations):
             
@@ -206,9 +223,4 @@ class MobilityDiversityFunctions:
             
         return entropies_
     
-
-    
-    
-   
-    
-
+# end of file #
