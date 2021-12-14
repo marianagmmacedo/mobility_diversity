@@ -17,6 +17,8 @@ The repository contains the following files:
 
 -- A Jupyter-notebook named "_Estimating Mobility Diversity.ipynb_" containing an example on how to use the _MobilityDiversityFunctions_ class.
 
+-- A pickle data sample named "_data_mobility_diversity.pkl_" of the results of mobility diversity from the mobility of gender and socioeconomic groups in the regions of Medellín, Bogotá and São Paulo.
+
 Please check our manuscript's bibliography for the URLs of the repositories of the data used in our study (see the section below).
 
 
@@ -25,12 +27,15 @@ Please check our manuscript's bibliography for the URLs of the repositories of t
 
 The results of our analysis have been summarised in the article entitled "_Differences in the spatial landscape of urban mobility: gender and socioeconomic perspectives_" published in PLoS ONE and available at the following URL:
 
-@@@ PLOS URL @@@
+@@@ PLOS URL @@@ --- not published yet
 
 Alternatively, the manuscript could be downloaded from the arXiv repository at this URL:
 
 https://arxiv.org/abs/2102.06619
 
+The code is available at: 
+
+https://github.com/marianagmmacedo/mobility_diversity
 
 
 ## Contact
